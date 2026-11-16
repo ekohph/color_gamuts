@@ -1,0 +1,4 @@
+// Local-only static server. No dependencies, no uploads, no remote requests.
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
+const root=__dirname;const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.md':'text/plain; charset=utf-8'};
+http.createServer((req,res)=>{let url;try{url=decodeURIComponent(req.url.split('?')[0]);}catch{return res.writeHead(400).end();}const f=path.resolve(root,'.'+(url==='/'?'/index.html':url));if(!f.startsWith(root+path.sep))return res.writeHead(403).end();fs.readFile(f,(err,data)=>{if(err)return res.writeHead(404).end('Not found');res.writeHead(200,{'Content-Type':mime[path.extname(f)]||'application/octet-stream','X-Content-Type-Options':'nosniff'});res.end(data);});}).listen(8765,'127.0.0.1',()=>console.log('Panel Gamut Lab: http://127.0.0.1:8765'));

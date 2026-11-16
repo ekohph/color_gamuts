@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),G=require('./gamut-math.js');const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} != ${b}`);
+for(const space of ['xy','uv'])for(const k of ['p3','bt2020'])near(G.calculate(G.references[k],space)[k].coverage,1);
+near(G.calculate(G.references.p3).bt2020.coverage,.7172899709074396);
+near(G.calculate(G.references.p3,'uv').bt2020.coverage,.7284919140252546);
+near(G.calculate(G.references.bt2020).p3.coverage,.9998007606661912);
+const testTriangle={R:[.640,.330],G:[.300,.600],B:[.150,.060]};near(G.calculate(testTriangle).p3.coverage,.737171052632);near(G.calculate(testTriangle).bt2020.coverage,.528870774757);near(G.calculate(testTriangle,'uv').p3.coverage,.796411874826);
+near(G.polyArea(G.clipPoly([[0,0],[2,0],[0,2]],[[1,0],[3,0],[1,2]])),.5);
+near(G.polyArea(G.clipPoly([[0,0],[0,2],[2,0]],[[1,2],[3,0],[1,0]])),.5);
+assert.deepEqual(G.clipPoly([[0,0],[1,0],[0,1]],[[2,2],[3,2],[2,3]]),[]);
+assert.throws(()=>G.calculate({R:[.1,.1],G:[.2,.2],B:[.3,.3]}));assert.throws(()=>G.calculate({R:[NaN,.2],G:[.2,.3],B:[.1,.2]}));assert.throws(()=>G.calculate({R:[.8,.8],G:[.2,.3],B:[.1,.2]}));
+console.log('PASS: standard coverage, coordinate transforms, intersection, winding, disjoint and invalid inputs');
